@@ -18,6 +18,9 @@ dependencies = [
 "tavily-python>=0.5.0",
 ]
 
+[project.scripts]
+deep-research = "deep_research.cli:main"
+
 [project.optional-dependencies]
 dev = ["mypy>=1.11.1", "ruff>=0.6.1"]
 
@@ -25,14 +28,15 @@ dev = ["mypy>=1.11.1", "ruff>=0.6.1"]
 requires = ["setuptools>=73.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools]
-packages = ["deep_research"]
-
-[tool.setuptools.package-dir]
-"deep_research" = "src"
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.setuptools.package-data]
 "*" = ["py.typed"]
+
+[tool.pyright]
+extraPaths = ["src"]
+pythonVersion = "3.11"
 
 [tool.ruff]
 lint.select = [
