@@ -129,7 +129,7 @@ Async API: `run_main_process` in `deep_research.main_process` (same parameters a
 
 ## Project layout
 
-```
+```text
 Deep_Research/
 ├── run_deep_research.py      # CLI: arbitrary query / query file (`deep-research` after install)
 ├── pyproject.toml            # Package metadata & dependencies (deep-research)

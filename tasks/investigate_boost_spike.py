@@ -42,18 +42,18 @@ def read_boost_distribution_data():
         return None
 
 
-def create_research_query(distribution_data: str = None) -> str:
+def create_research_query(distribution_data: str | None = None) -> str:
     """
     Create a research query to investigate the Boost usage spike.
 
     Args:
-        distribution_data: Optional Boost distribution data from markdown file
+        distribution_data: Optional Boost distribution data from markdown file;
+            when missing or empty, uses embedded summary statistics.
 
     Returns:
         Research query string
     """
-    # Extract key data points
-    spike_info = """
+    default_spike_info = """
 Key Data Points from Boost Version Distribution:
 - Version 1.53.0 (2013-02-04): 58 confirmed + 281 unconfirmed = 339 total repositories
 - Version 1.54.0 (2013-07-01): 90 confirmed + 267 unconfirmed = 357 total repositories
@@ -68,6 +68,11 @@ Key Data Points from Boost Version Distribution:
 The spike is most pronounced in version 1.55.0 (November 2013) with 714 unconfirmed repositories,
 which is approximately 2.5x higher than surrounding versions.
 """
+    spike_info = (
+        distribution_data.strip()
+        if distribution_data and distribution_data.strip()
+        else default_spike_info
+    )
 
     query = f"""Investigate the reasons for the significant usage spike in Boost C++ Library during versions 1.53.0-1.61.0 (2013-2016), with particular focus on version 1.55.0 (November 2013) which shows the highest spike.
 
@@ -207,7 +212,7 @@ def main():
     except Exception as e:
         console.print(
             Panel(
-                f"[bold red]Unexpected error:[/bold red]\n{str(e)}\n\n"
+                f"[bold red]Unexpected error:[/bold red]\n{e!s}\n\n"
                 "If this is an API error, check your API keys and quota limits.",
                 title="[bold red]Fatal Error[/bold red]",
                 border_style="red",

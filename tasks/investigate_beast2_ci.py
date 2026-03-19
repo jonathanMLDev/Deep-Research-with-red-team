@@ -9,6 +9,8 @@ Usage:
     python -m tasks.investigate_beast2_ci
 """
 
+from pathlib import Path
+
 from deep_research.main_process import execute_main_process
 
 OUTPUT_PATH = "report_for_beast2_ci"
@@ -253,11 +255,14 @@ Provide a CONCISE, OBJECTIVE, and QUANTITATIVE report with:
 
 def main():
     query = create_research_query()
-    initial_report_file = "report_for_beast2_ci/beast2_ci_final_report.md"
-    # initial_report_file = "report_for_beast2_ci/beast2_ci_analysis_20260117_100000.md"
+    initial_report_file = Path("report_for_beast2_ci/beast2_ci_final_report.md")
+    initial_report: str | None = None
+    if initial_report_file.is_file():
+        initial_report = initial_report_file.read_text(encoding="utf-8")
 
-    with open(initial_report_file, "r", encoding="utf-8") as file:
-        initial_report = file.read()
+    kwargs = {}
+    if initial_report is not None:
+        kwargs["initial_report"] = initial_report
 
     report_path, summary_path = execute_main_process(
         query,
@@ -267,7 +272,7 @@ def main():
         report_title="Beast2 CI Availability Improvement Options",
         thread_id="beast2_ci_improvement",
         recursion_limit=15,
-        # initial_report=initial_report,
+        **kwargs,
     )
 
     print(f"[✓] Report saved to: {report_path}")

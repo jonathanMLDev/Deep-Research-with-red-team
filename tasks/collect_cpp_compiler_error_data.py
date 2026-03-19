@@ -55,7 +55,6 @@ def main():
     )
     parser.add_argument(
         "--research",
-        default=True,
         action="store_true",
         help="Run deep research (Tavily + LLM) to find additional sources and tools; requires API keys in .env",
     )

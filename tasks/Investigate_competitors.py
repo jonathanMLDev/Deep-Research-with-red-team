@@ -125,7 +125,7 @@ def main():
     else:
         libraries = libraries[start_index:]
 
-    for lib in libraries[73:74]:
+    for lib in libraries:
         print(f"Processing {lib['name']}...")
         run_for_library(lib)
 

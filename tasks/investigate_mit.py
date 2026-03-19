@@ -1,11 +1,13 @@
 """
-Main entry point for ThinkDepth.ai Deep Research.
+Main entry point for MIT-license attribution research task.
 
 This script provides a command-line interface to run deep research queries.
 """
 
 import os
 import sys
+import traceback
+from pathlib import Path
 
 from rich.console import Console
 from rich.panel import Panel
@@ -18,17 +20,16 @@ console = Console()
 OUTPUT_PATH = "report_for_MIT"
 
 
-def create_research_query():
+def create_research_query() -> str:
     """
-    Create a research query from a file or use default.
+    Return the research query, preferring ``prompt.txt`` in the repo root.
 
-    First tries to read from prompt.txt in the project root.
-    If the file doesn't exist or is empty, uses a default query.
+    If ``prompt.txt`` is missing, unreadable, or empty, returns the built-in
+    default MIT-attribution research brief.
 
     Returns:
-        str: The research query to use
+        The research query string.
     """
-    # Default query if file doesn't exist or is empty
     default_query = """I need to write an up-to-date report titled "Notable Companies That Avoid Using MIT-Licensed Code Due to Binary Attribution Requirements".
 
 Please research and report on the existence of cases among large, market-influential companies that have an explicit, documented practice of avoiding MIT-licensed code specifically because of the MIT license's requirement to preserve copyright and license notices in distributed binaries or user-facing products.
@@ -43,6 +44,14 @@ Requirements:
 
 Note: Boost License (BSL-1.0) is convenient because it does not have binary attribution requirements, but this research should focus specifically on MIT license avoidance due to attribution requirements."""
 
+    prompt_path = Path(__file__).resolve().parent.parent / "prompt.txt"
+    if prompt_path.is_file():
+        try:
+            text = prompt_path.read_text(encoding="utf-8").strip()
+            if text:
+                return text
+        except OSError:
+            pass
     return default_query
 
 
@@ -130,9 +139,10 @@ def main():
             )
         sys.exit(1)
     except Exception as e:
+        traceback.print_exc()
         console.print(
             Panel(
-                f"[bold red]Unexpected error:[/bold red]\n{str(e)}\n\n"
+                f"[bold red]Unexpected error:[/bold red]\n{e!s}\n\n"
                 "If this is an API error, check your API keys and quota limits.",
                 title="[bold red]Fatal Error[/bold red]",
                 border_style="red",
